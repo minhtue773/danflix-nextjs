@@ -2,6 +2,7 @@ import HeroBanner from '@/components/pages/Home/HeroBanner';
 import CompanySection from '@/components/pages/Home/CompanySection';
 import MovieSection from '@/components/pages/Home/MovieSection';
 import CTA from '@/components/common/CTA';
+import { AnimateInView } from '@/components/animate/AnimateInView';
 
 export default function Home() {
   const movies = [
@@ -177,17 +178,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full pb-12 md:pb-20">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
-          <MovieSection title="Phim nổi bật" movies={movies} />
-        </div>
-      </section>
+      <AnimateInView variant="blurIn">
+        <section className="w-full pb-12 md:pb-20">
+          <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
+            <MovieSection title="Phim nổi bật" movies={movies} />
+          </div>
+        </section>
+      </AnimateInView>
 
-      <section className="w-full pb-12 md:pb-20">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
-          <MovieSection title="Phim lẻ mới cập nhật" movies={movies} />
-        </div>
-      </section>
+      <AnimateInView variant="blurIn">
+        <section className="w-full pb-12 md:pb-20">
+          <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
+            <MovieSection title="Phim lẻ mới cập nhật" movies={movies} />
+          </div>
+        </section>
+      </AnimateInView>
 
       <section className="w-full pb-12 md:pb-20">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-8">

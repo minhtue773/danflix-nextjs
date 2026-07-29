@@ -1,3 +1,15 @@
+export interface MovieFilterParams {
+  type?: string;
+  category?: string;
+  country?: string;
+  year?: string;
+  page?: string | number;
+  limit?: string | number;
+  sort_field?: string;
+  sort_type?: string;
+  sort_lang?: string;
+}
+
 export interface MoviePhimapi {
   _id: string;
   tmdb: Tmdb;

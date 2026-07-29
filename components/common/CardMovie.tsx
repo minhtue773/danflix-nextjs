@@ -10,7 +10,7 @@ interface MovieProps {
 export default function CardMovie({ movie }: MovieProps) {
   return (
     <>
-      <Link href={`/movies/${movie.tmdb.id}/${movie.slug}`}>
+      <Link href={`/movies/${movie.slug}`}>
         <div className="group relative aspect-2/3 overflow-hidden rounded-lg border">
           <Image
             fill
@@ -20,15 +20,15 @@ export default function CardMovie({ movie }: MovieProps) {
             alt={movie.name}
           />
           {movie.tmdb.type === 'tv' && (
-            <div className="bg-primary text-primary-foreground absolute top-0 right-0 rounded-bl-lg p-1 px-4 text-sm">
+            <div className="absolute top-0 right-0 rounded-bl-lg bg-primary p-1 px-4 text-sm text-primary-foreground">
               TV
             </div>
           )}
-          <div className="text-foreground absolute right-0 bottom-0 left-0 z-10 flex flex-col gap-1 bg-black/70 mask-t-from-90% p-2 backdrop-blur-md">
+          <div className="absolute right-0 bottom-0 left-0 z-10 flex flex-col gap-1 bg-black/70 mask-t-from-90% p-2 text-foreground backdrop-blur-md">
             <h3 className="truncate text-sm capitalize text-shadow-red-300 text-shadow-xs">
               {movie.name}
             </h3>
-            <div className="text-muted-foreground flex items-center gap-1 text-xs">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <p>{movie.year}</p>
               <Dot size={12} />
               <p>{movie.quality}</p>

@@ -5,73 +5,141 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { Funnel } from 'lucide-react';
-import { useState } from 'react';
+import { Funnel, RotateCcw } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+
+// Data mẫu cho các danh mục lọc
+const TYPES = [
+  { value: 'phim-le', name: 'Phim Lẻ' },
+  { value: 'phim-bo', name: 'Phim Bộ' },
+  { value: 'phim-chieu-rap', name: 'Phim chiếu rạp' },
+  { value: 'hoat-hinh', name: 'Hoạt Hình' },
+  { value: 'tv-shows', name: 'TV Shows' },
+];
+
+const CATEGORIES = [
+  { value: '', name: 'Tất cả' },
+  { value: 'kinh-di', name: 'Phim Kinh Dị' },
+  { value: 'hanh-dong', name: 'Phim Hành Động' },
+  { value: 'tinh-cam', name: 'Phim Tình Cảm' },
+  { value: 'hoat-hinh', name: 'Phim Hoạt Hình' },
+];
+
+const COUNTRIES = [
+  { value: '', name: 'Tất cả' },
+  { value: 'trung-quoc', name: 'Trung Quốc' },
+  { value: 'han-quoc', name: 'Hàn Quốc' },
+  { value: 'au-my', name: 'Âu Mỹ' },
+  { value: 'nhat-ban', name: 'Nhật Bản' },
+];
+
+const YEARS = [
+  { value: '', name: 'Tất cả' },
+  { value: '2026', name: '2026' },
+  { value: '2025', name: '2025' },
+  { value: '2024', name: '2024' },
+  { value: '2023', name: '2023' },
+];
 
 export function FilterButton() {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const handleSelect = (value: string) => {
-    setSelectedCategory(value);
-    console.log('Value đã chọn:', value);
-    // Tại đây bạn có thể gọi API hoặc filter danh sách phim
+  // Đổi / thêm param trên URL
+  const handleSelect = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key); // Chọn "Tất cả" thì xóa param khỏi URL
+    }
+
+    // Luôn reset về page 1 khi bộ lọc thay đổi
+    params.set('page', '1');
+
+    // Cập nhật URL -> Trigger Server Component cha render lại
+    router.push(`${pathname}?${params.toString()}`);
   };
-  const CATEGORIES = [
-    { value: '', name: 'Tất cả' },
-    { value: 'kinh-di', name: 'Phim Kinh Dị' },
-    { value: 'hanh-dong', name: 'Phim Hành Động' },
-    { value: 'tinh-cam', name: 'Phim Tình Cảm' },
-    { value: 'hoat-hinh', name: 'Phim Hoạt Hình' },
-  ];
+
+  // Nút xóa sạch lọc
+  const handleReset = () => {
+    router.push(pathname);
+  };
+
+  const renderFilterSection = (
+    title: string,
+    paramKey: string,
+    options: { value: string; name: string }[]
+  ) => {
+    const currentValue = searchParams.get(paramKey) || (paramKey === 'type' ? 'phim-le' : '');
+
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-bold text-foreground">{title}</h3>
+        <div className="flex flex-wrap items-center gap-2">
+          {options.map((item) => {
+            const isActive = currentValue === item.value;
+            return (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => handleSelect(paramKey, item.value)}
+                className={`cursor-pointer rounded-md border px-3 py-1.5 text-xs font-semibold capitalize transition-all ${
+                  isActive
+                    ? 'border-red-600 bg-red-600/20 text-white shadow-sm'
+                    : 'border-border text-muted-foreground hover:bg-card hover:text-foreground'
+                }`}
+              >
+                {item.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Drawer showSwipeHandle>
       <DrawerTrigger
         render={
           <Button variant={'default'} className={'rounded-md px-4'}>
-            <Funnel />
+            <Funnel className="mr-2 h-4 w-4" />
             Bộ lọc
           </Button>
         }
       />
       <DrawerContent>
-        <DrawerHeader>
+        <DrawerHeader className="flex items-center justify-between">
           <DrawerTitle className={'font-sans'}>Lọc Phim</DrawerTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleReset}
+            className="text-xs text-muted-foreground"
+          >
+            <RotateCcw className="mr-1 h-3 w-3" /> Đặt lại
+          </Button>
         </DrawerHeader>
-        <div className="flex-1 p-4">
-          <div className="overflow-y-scroll rounded-2xl bg-accent p-4 group-data-[swipe-axis=x]/drawer-popup:size-full group-data-[swipe-axis=y]/drawer-popup:h-80 group-data-[swipe-axis=y]/drawer-popup:w-full">
-            <div className="space-y-4">
-              <h2 className="font-bold">Thể loại</h2>
-              <div className="flex flex-wrap items-center gap-4">
-                {CATEGORIES.map((item) => {
-                  // 3. Kiểm tra xem category này có đang active không
-                  const isActive = selectedCategory === item.value;
-                  return (
-                    <div
-                      key={item.value}
-                      onClick={() => handleSelect(item.value)}
-                      className={`cursor-pointer rounded-md border p-2 text-xs font-semibold capitalize transition-colors ${
-                        isActive
-                          ? 'border-red-600 bg-red-600/20 font-medium'
-                          : 'border-border text-muted-foreground hover:bg-card'
-                      }`}
-                    >
-                      {item.name}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+
+        <div className="max-h-[70vh] flex-1 overflow-y-auto p-4">
+          <div className="space-y-6 rounded-2xl bg-accent p-4">
+            {renderFilterSection('Loại phim', 'type', TYPES)}
+            {renderFilterSection('Thể loại', 'category', CATEGORIES)}
+            {renderFilterSection('Quốc gia', 'country', COUNTRIES)}
+            {renderFilterSection('Năm phát hành', 'year', YEARS)}
           </div>
         </div>
+
         <DrawerFooter>
-          <DrawerClose render={<Button>Close</Button>} />
+          <DrawerClose render={<Button className="w-full">Áp dụng / Đóng</Button>} />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
