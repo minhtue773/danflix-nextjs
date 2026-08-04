@@ -1,6 +1,6 @@
 module.exports = {
   plugins: ['prettier-plugin-tailwindcss'],
-  tailwindStylesheet: './app/globals.css',
+  tailwindStylesheet: './src/app/globals.css',
   semi: true,
   singleQuote: true,
   tabWidth: 2,
