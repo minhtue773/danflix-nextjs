@@ -18,6 +18,8 @@ export default function BannerPage({ breadcrumb }: BannerPageProps) {
           <div className="absolute inset-0 bg-amber-100">
             <Image
               loading="eager"
+              priority
+              sizes={'100vw'}
               fill
               src="/assets/images/1.jpg"
               alt="slidebanner"
@@ -26,7 +28,9 @@ export default function BannerPage({ breadcrumb }: BannerPageProps) {
           </div>
           <div className="absolute inset-0 z-10 bg-black/40 backdrop-blur-sm" />
           <div className="absolute inset-0 z-20 flex items-center justify-center">
-            <CustomBreadcrumb items={breadcrumb} />
+            <div className="px-4 md:px-8">
+              <CustomBreadcrumb items={breadcrumb} />
+            </div>
           </div>
         </div>
       </section>

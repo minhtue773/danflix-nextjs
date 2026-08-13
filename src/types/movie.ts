@@ -31,11 +31,13 @@ export interface MoviePhimapi {
 
 export interface MovieEpisode {
   server_name: string;
-  server_data: {
-    name: string;
-    slug: string;
-    link_m3u8: string;
-  }[];
+  server_data: MovieEpisodeServerData[];
+}
+
+export interface MovieEpisodeServerData {
+  name: string;
+  slug: string;
+  link_m3u8: string;
 }
 
 export interface Category {
