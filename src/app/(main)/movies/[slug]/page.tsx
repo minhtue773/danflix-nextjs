@@ -1,4 +1,4 @@
-import { MoviePhimapi } from '@/types/movie';
+import { MovieEpisode, MoviePhimapi } from '@/types/movie';
 import { Heart, MessageCircleMore, Play, Plus, Share } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,7 +18,9 @@ export default async function DetailPage({ params }: PageProps) {
   const { slug } = await params;
   const data = await movieService.getMovieDetail(slug);
   const movie: MoviePhimapi = data?.movie;
+  const episodes: MovieEpisode[] = data?.episodes || [];
 
+  const firstEpisodeSlug = episodes?.[0]?.server_data?.[0]?.slug || 'tap-01';
   return (
     <>
       <div className="relative isolate w-full">
@@ -112,7 +114,7 @@ export default async function DetailPage({ params }: PageProps) {
             </div>
             <div className="z-10 col-span-2 flex flex-col gap-8">
               <div className="flex flex-col items-center justify-between gap-4 text-white md:flex-row">
-                <Link href={`/movies/${movie?.slug}/watch`}>
+                <Link href={`/movies/${movie?.slug}/${firstEpisodeSlug}`}>
                   <Button
                     size="lg"
                     className="cursor-pointer gap-3 rounded-full px-8 py-6 font-heading text-lg"
