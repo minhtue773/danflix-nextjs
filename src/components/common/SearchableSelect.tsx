@@ -46,7 +46,7 @@ export function SearchableSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full max-w-3xs justify-between rounded-md border-border bg-background font-normal"
+            className="w-full max-w-3xs justify-between rounded-md border-border bg-background text-base font-normal"
           >
             <span className="truncate">{selectedOption ? selectedOption.name : placeholder}</span>
             <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
