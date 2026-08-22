@@ -65,7 +65,12 @@ export default function ButtonSearch() {
         onOpenChange={setOpen}
       >
         <Command shouldFilter={false}>
-          <CommandInput placeholder="Tìm kiếm phim..." value={keyword} onValueChange={setKeyword} />
+          <CommandInput
+            placeholder="Tìm kiếm phim..."
+            value={keyword}
+            onValueChange={setKeyword}
+            className="text-base"
+          />
           <CommandList>
             {isFetching && (
               <div className="flex items-center justify-center gap-2 p-4 text-sm text-muted-foreground">
