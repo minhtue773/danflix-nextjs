@@ -34,7 +34,6 @@ export async function MovieList({ searchParams }: MovieListProps) {
           fade
           slide={{ direction: 'up', offset: 30 }}
           blur={{ initialBlur: 6 }}
-          inView
           delay={0}
         >
           {movies.map((item: MoviePhimapi) => (
