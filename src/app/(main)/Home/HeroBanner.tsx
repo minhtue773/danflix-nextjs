@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import { motion } from 'motion/react';
+import Link from 'next/link';
 
 export default function HeroBanner() {
   return (
@@ -16,7 +17,8 @@ export default function HeroBanner() {
               transition={{ duration: 1, ease: 'easeInOut' }}
               className="text-4xl leading-10 font-medium md:text-7xl md:leading-18"
             >
-              Building bold brands with <span className={`tracking-tight`}>thoughtful design</span>
+              Thế giới điện ảnh đỉnh cao{' '}
+              <span className={`tracking-tight`}>trên từng góc nhìn</span>{' '}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 32 }}
@@ -24,8 +26,8 @@ export default function HeroBanner() {
               transition={{ duration: 1, delay: 0.1, ease: 'easeInOut' }}
               className="max-w-2xl text-sm font-normal text-muted-foreground md:text-base"
             >
-              At shadcn space, we help small startups tackle the world's biggest challenges with
-              tailored solutions, guiding you from strategy to success in a competitive market.
+              Khám phá hàng ngàn bộ phim bom tấn, phim bộ đặc sắc và phim hoạt hình vietsub chất
+              lượng cao. Trải nghiệm không gian giải trí mượt mà, cập nhật liên tục mỗi ngày.{' '}
             </motion.p>
           </div>
           <motion.div
@@ -35,7 +37,9 @@ export default function HeroBanner() {
             className="flex flex-col items-center justify-center gap-8 md:flex-row"
           >
             <Button className="group relative h-12 w-fit cursor-pointer overflow-hidden rounded-full p-1 ps-6 pe-14 text-sm font-medium transition-all duration-500 hover:ps-14 hover:pe-6">
-              <span className="relative z-10 transition-all duration-500">Get Started</span>
+              <Link href={'/movies'} className="relative z-10 transition-all duration-500">
+                Trải nghiệm
+              </Link>
               <span className="absolute right-1 flex h-10 w-10 items-center justify-center rounded-full bg-background text-foreground transition-all duration-500 group-hover:right-[calc(100%-44px)] group-hover:rotate-45">
                 <ArrowUpRight size={16} />
               </span>

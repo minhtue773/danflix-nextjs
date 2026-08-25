@@ -7,16 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  CircleEllipsis,
-  Clapperboard,
-  Headset,
-  House,
-  Info,
-  Search,
-  Shield,
-  User,
-} from 'lucide-react';
+import { CircleEllipsis, Clapperboard, Headset, House, Info, Shield, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ButtonSearchMobile from './ButtonSearchMobile';

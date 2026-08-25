@@ -15,18 +15,9 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Loader2, Search } from 'lucide-react';
-import { MoviePhimapi } from '@/types/movie';
 import Image from 'next/image';
-
-async function searchMovies(keyword: string): Promise<MoviePhimapi[]> {
-  if (!keyword.trim()) return [];
-  const res = await fetch(
-    `https://phimapi.com/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}&limit=20`
-  );
-  if (!res.ok) throw new Error('Search failed');
-  const data = await res.json();
-  return data?.data?.items || data?.data || [];
-}
+import { movieService } from '@/services/movieService';
+import { MoviePhimapi } from '@/types/movie';
 
 export default function ButtonSearch() {
   const [open, setOpen] = React.useState(false);
@@ -36,14 +27,16 @@ export default function ButtonSearch() {
 
   const { data: movies = [], isFetching } = useQuery({
     queryKey: ['search-movies', debouncedKeyword],
-    queryFn: () => searchMovies(debouncedKeyword),
+    queryFn: async () => {
+      const res = await movieService.searchMovie(debouncedKeyword, '1', '10');
+      return res?.data?.items || [];
+    },
     enabled: !!debouncedKeyword.trim(),
     staleTime: 1000 * 60 * 10,
   });
 
   const handleSelect = (slug: string) => {
     setOpen(false);
-    setKeyword('');
     router.push(`/movies/${slug}`);
   };
 
@@ -81,33 +74,48 @@ export default function ButtonSearch() {
             <CommandEmpty>No results found.</CommandEmpty>
 
             {!isFetching && movies.length > 0 && (
-              <CommandGroup heading="Phim gợi ý">
-                {movies.map((movie) => (
-                  <CommandItem
-                    key={movie._id}
-                    value={movie.name}
-                    onSelect={() => {
-                      handleSelect(movie.slug);
-                    }}
-                    className="flex cursor-pointer items-center gap-3 p-2"
-                  >
-                    <Image
-                      src={movie.poster_url}
-                      alt={movie.name}
-                      width={48}
-                      height={72}
-                      className="aspect-2/3 h-auto w-12 rounded object-cover"
-                    />
-                    <div className="flex flex-col gap-1 overflow-hidden">
-                      <span className="truncate text-sm font-semibold">{movie.name}</span>
-                      <span className="truncate text-xs">{movie.origin_name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {movie.year} • {movie.quality}
-                      </span>
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              <>
+                <CommandGroup heading="Phim gợi ý">
+                  {movies.map((movie: MoviePhimapi) => (
+                    <CommandItem
+                      key={movie._id}
+                      value={movie.name}
+                      onSelect={() => {
+                        handleSelect(movie.slug);
+                      }}
+                      className="flex cursor-pointer items-center gap-3 p-2"
+                    >
+                      <Image
+                        src={movie.poster_url}
+                        alt={movie.name}
+                        width={48}
+                        height={72}
+                        className="aspect-2/3 h-auto w-12 rounded object-cover"
+                      />
+                      <div className="flex flex-col gap-1 overflow-hidden">
+                        <span className="truncate text-sm font-semibold">{movie.name}</span>
+                        <span className="truncate text-xs">{movie.origin_name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {movie.year} • {movie.quality}
+                        </span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                <CommandItem
+                  onSelect={() => {
+                    const target = debouncedKeyword.trim();
+                    setOpen(false);
+                    setKeyword(''); // Clear input trong Modal
+                    if (target) {
+                      router.push(`/search?q=${encodeURIComponent(target)}`);
+                    }
+                  }}
+                  className="flex w-full cursor-pointer justify-center py-2 text-center text-red-500"
+                >
+                  Xem tất cả kết quả cho "{debouncedKeyword}"
+                </CommandItem>
+              </>
             )}
           </CommandList>
         </Command>

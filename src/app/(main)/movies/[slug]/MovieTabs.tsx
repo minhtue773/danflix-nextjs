@@ -25,6 +25,7 @@ export default async function MovieTabs({ type, id }: MovieTabsProps) {
     append_to_response: 'credits,images',
     language: 'vi-VN',
   });
+
   const casts: Cast[] = res?.credits?.cast || [];
   const images: Image[] = res?.images?.posters || [];
 

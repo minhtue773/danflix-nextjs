@@ -43,6 +43,20 @@ export const movieService = {
     return res.json();
   },
 
+  async searchMovie(q: string, page: string, limit: string) {
+    const apiUrl = `${API_BASE_URL}/v1/api/tim-kiem?keyword=${q}&page=${page}&limit=${limit}`;
+
+    const res = await fetch(apiUrl, {
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Lỗi khi tải dữ liệu`);
+    }
+
+    return res.json();
+  },
+
   // Sau này có thể mở rộng thêm các hàm khác dễ dàng:
   // async getMovieDetail(slug: string) { ... },
   // async searchMovies(keyword: string) { ... },

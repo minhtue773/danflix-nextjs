@@ -1,3 +1,4 @@
+import { getMovieImageUrl } from '@/lib/utils';
 import { MoviePhimapi } from '@/types/movie';
 import { Dot } from 'lucide-react';
 import Image from 'next/image';
@@ -15,7 +16,7 @@ export default function CardMovie({ movie }: MovieProps) {
           <Image
             fill
             className="h-full w-full object-cover transition-all duration-150 ease-in group-hover:scale-110"
-            src={`https://phimimg.com/` + movie.poster_url}
+            src={getMovieImageUrl(movie.poster_url)}
             sizes="(max-width: 768px) 144px, 192px"
             alt={movie.name}
           />

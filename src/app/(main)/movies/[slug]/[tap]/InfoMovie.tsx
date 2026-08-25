@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { MovieEpisode, MoviePhimapi, MovieEpisodeServerData } from '@/types/movie';
 import NetflixVideoPlayer from './NetflixVideoPlayer';
@@ -14,10 +14,8 @@ interface InfoMovieProps {
 
 export default function InfoMovie({ movie, episodes, movieSlug, currentTapSlug }: InfoMovieProps) {
   const playerRef = useRef<HTMLDivElement>(null);
-
   // 1. Quản lý Server State
   const [currentServerIndex, setCurrentServerIndex] = useState<number>(0);
-
   const hasEpisodes = Array.isArray(episodes) && episodes.length > 0;
   const currentServer = hasEpisodes ? episodes[currentServerIndex] : null;
   const serverData = useMemo(() => currentServer?.server_data || [], [currentServer]);
@@ -42,6 +40,20 @@ export default function InfoMovie({ movie, episodes, movieSlug, currentTapSlug }
 
     return index !== -1 ? index : 0;
   }, [serverData, currentTapSlug]);
+
+  // 1. Tạo ref cho nút tập phim đang active
+  const activeEpisodeRef = useRef<HTMLAnchorElement | null>(null);
+
+  // 2. Tự động cuộn đến tập active mỗi khi `activeEpisodeIndex` thay đổi
+  useEffect(() => {
+    if (activeEpisodeRef.current) {
+      activeEpisodeRef.current.scrollIntoView({
+        behavior: 'smooth', // Cuộn mượt mà
+        block: 'nearest', // Cuộn đến vị trí gần nhất trong khung scroll
+        inline: 'nearest',
+      });
+    }
+  }, [activeEpisodeIndex]);
 
   const currentSrc: MovieEpisodeServerData | undefined = serverData[activeEpisodeIndex];
 
@@ -81,6 +93,7 @@ export default function InfoMovie({ movie, episodes, movieSlug, currentTapSlug }
       <div ref={playerRef} className="scroll-mt-6">
         <NetflixVideoPlayer
           key={`${currentServerIndex}-${currentSrc?.slug || activeEpisodeIndex}`}
+          movieId={`${movieSlug}_tap_${currentTapSlug || '1'}`}
           src={currentSrc?.link_m3u8}
           poster={movie?.thumb_url || movie?.poster_url}
           title={currentSrc?.name ? `${movie?.name} - ${currentSrc.name}` : movie?.name}
@@ -197,6 +210,7 @@ export default function InfoMovie({ movie, episodes, movieSlug, currentTapSlug }
                   <Link
                     key={item.slug || idx}
                     href={getEpisodeUrl(item.slug)}
+                    ref={isActive ? activeEpisodeRef : null}
                     onClick={handleScrollToPlayer}
                     className={`flex h-10 cursor-pointer items-center justify-center rounded-md text-xs font-semibold transition-all ${
                       isActive
