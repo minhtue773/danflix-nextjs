@@ -42,16 +42,9 @@ export default function ButtonSearch() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Button
-        type="button"
-        className={'touch-manipulation'}
-        onClick={() => setOpen(true)}
-        size="icon-sm"
-        variant={'ghost'}
-      >
-        <Search className="text-card-foreground" />
-      </Button>
-
+   <button type="button" onClick={() => setOpen(true)}>
+        <Search />
+      </button>
       <CommandDialog
         className="mx-auto w-full p-4 md:max-w-3xl!"
         open={open}
