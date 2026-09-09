@@ -7,7 +7,7 @@ export const movieService = {
     const queryParams = new URLSearchParams();
     queryParams.set('page', String(params.page || '1'));
     queryParams.set('limit', String(params.limit || '20'));
-    queryParams.set('sort_field', params.sort_field || 'year');
+    queryParams.set('sort_field', params.sort_field || 'modified.time');
     queryParams.set('sort_type', params.sort_type || 'desc');
 
     if (params.category) queryParams.set('category', params.category);

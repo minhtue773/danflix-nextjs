@@ -8,7 +8,7 @@ import Link from 'next/link';
 export default function HeroBanner() {
   return (
     <section className="w-full">
-      <div className="relative flex h-[75vh] w-full items-center justify-center before:absolute before:top-24 before:-z-10 before:h-full before:w-full before:rounded-full before:bg-linear-to-r before:from-sky-100 before:via-white before:to-amber-100 before:blur-3xl dark:before:-z-10 dark:before:rounded-full dark:before:from-slate-800 dark:before:via-black dark:before:to-stone-700 dark:before:blur-3xl">
+      <div className="relative flex h-[60vh] w-full items-center justify-center before:absolute before:top-24 before:-z-10 before:h-full before:w-full before:rounded-full before:bg-linear-to-r before:from-sky-100 before:via-white before:to-amber-100 before:blur-3xl dark:before:-z-10 dark:before:rounded-full dark:before:from-slate-800 dark:before:via-black dark:before:to-stone-700 dark:before:blur-3xl">
         <div className="mx-auto flex max-w-5xl flex-col gap-8">
           <div className="relative flex flex-col items-center gap-4 px-4 text-center sm:gap-6">
             <motion.h1

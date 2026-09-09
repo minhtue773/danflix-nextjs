@@ -15,9 +15,8 @@ export default function BannerPage({ breadcrumb }: BannerPageProps) {
     <>
       <section className="w-full">
         <div className="relative h-[36vh] mask-b-from-80%">
-          <div className="absolute inset-0 bg-amber-100">
+          <div className="absolute inset-0">
             <Image
-              loading="eager"
               priority
               sizes="100vw"
               fill
