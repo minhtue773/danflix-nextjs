@@ -101,8 +101,7 @@ export default function ButtonSearch() {
                       </div>
                     </CommandItem>
                   ))}
-                </CommandGroup>
-                <CommandItem
+  <CommandItem
                   onSelect={() => {
                     const target = debouncedKeyword.trim();
                     setOpen(false);
@@ -115,6 +114,8 @@ export default function ButtonSearch() {
                 >
                   Xem tất cả kết quả cho "{debouncedKeyword}"
                 </CommandItem>
+                </CommandGroup>
+              
               </>
             )}
           </CommandList>
