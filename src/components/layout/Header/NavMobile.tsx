@@ -30,9 +30,8 @@ export default function Nav() {
   const isDropdownActive = dropdownItems.some((item) => pathname.startsWith(item.href));
 
   return (
-    <nav className="flex items-center gap-6">
+    <nav className="flex items-center justify-between gap-8 px-4">
       <div className="relative flex flex-col items-center justify-center gap-1">
-        <span className="h-1.5 w-1.5 rounded-full bg-transparent opacity-0" />
         <ButtonSearchMobile />
       </div>
 
@@ -44,14 +43,9 @@ export default function Nav() {
             key={item.label}
             href={item.href}
             className={`relative flex flex-col items-center justify-center gap-1 transition-all duration-200 ${
-              isActive ? 'scale-110 text-red-500' : ''
+              isActive ? 'scale-125 text-red-500' : ''
             }`}
           >
-            <span
-              className={`h-1.5 w-1.5 rounded-full transition-all ${
-                isActive ? 'bg-red-500 opacity-100' : 'bg-transparent opacity-0'
-              }`}
-            />
             {item.icon}
           </Link>
         );
@@ -66,12 +60,6 @@ export default function Nav() {
                 isDropdownActive ? 'scale-110 text-red-500' : ''
               }`}
             >
-              {/* Chấm đỏ xuất hiện khi active */}
-              <span
-                className={`h-1.5 w-1.5 rounded-full transition-all ${
-                  isDropdownActive ? 'bg-red-500 opacity-100' : 'bg-transparent opacity-0'
-                }`}
-              />
               <CircleEllipsis />
             </button>
           }

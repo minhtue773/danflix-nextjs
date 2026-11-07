@@ -11,8 +11,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { Spinner } from '@/components/ui/spinner';
 import { Funnel, RotateCcw } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useTransition } from 'react';
 
 // Data mẫu cho các danh mục lọc
 const TYPES = [
@@ -292,28 +294,38 @@ export function FilterButton() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  const [isPending, startTransition] = useTransition();
   // Đổi / thêm param trên URL
-  const handleSelect = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
 
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key); // Chọn "Tất cả" thì xóa param khỏi URL
-    }
+  const handleSelect = useCallback(
+    (key: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    // Luôn reset về page 1 khi bộ lọc thay đổi
-    params.set('page', '1');
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
 
-    // Cập nhật URL -> Trigger Server Component cha render lại
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+      params.set('page', '1');
+
+      const query = params.toString();
+      const url = query ? `${pathname}?${query}` : pathname;
+
+      // Bọc router.replace trong startTransition
+      startTransition(() => {
+        router.replace(url, { scroll: false });
+      });
+    },
+    [pathname, searchParams, router]
+  );
 
   // Nút xóa sạch lọc
-  const handleReset = () => {
-    router.push(pathname, { scroll: false });
-  };
+  const handleReset = useCallback(() => {
+    startTransition(() => {
+      router.replace(pathname, { scroll: false });
+    });
+  }, [pathname, router]);
 
   const renderFilterSection = (
     title: string,
@@ -394,7 +406,14 @@ export function FilterButton() {
         </div>
 
         <DrawerFooter>
-          <DrawerClose render={<Button className="w-full">Áp dụng / Đóng</Button>} />
+          <DrawerClose
+            render={
+              <Button disabled={isPending} className="w-full">
+                Áp dụng / Đóng
+                {isPending && <Spinner data-icon="inline-start" />}
+              </Button>
+            }
+          />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

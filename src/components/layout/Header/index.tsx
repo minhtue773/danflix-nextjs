@@ -8,7 +8,7 @@ export default function Header() {
         <HeaderDesktop />
       </header>
 
-      <header className="fixed right-0 bottom-0 left-0 z-40 flex h-14 items-center justify-around overflow-hidden rounded-t-4xl border bg-white py-2 text-black md:hidden">
+      <header className="fixed right-0 bottom-4 left-0 z-40 mx-4 flex h-14 items-center justify-around overflow-hidden rounded-4xl border bg-card/70 py-2 text-white backdrop-blur-md md:hidden">
         <NavMobile />
       </header>
     </>
