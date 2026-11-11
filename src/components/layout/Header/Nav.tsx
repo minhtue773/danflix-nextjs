@@ -15,13 +15,14 @@ export default function Nav() {
   ];
 
   return (
-    <nav className="flex items-center gap-4 md:gap-6">
+    <nav aria-label="Điều hướng chính" className="flex items-center gap-4 md:gap-6">
       {navItems.map((item) => {
         const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
 
         return (
           <Link
             key={item.href}
+            aria-current={isActive ? 'page' : undefined}
             href={item.href}
             className={`font-sans text-sm text-foreground capitalize transition-all duration-150 ${
               isActive

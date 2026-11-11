@@ -45,6 +45,7 @@ export default function SearchInput() {
     <div className="relative">
       <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
       <Input
+        aria-label="Nhập tên phim"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Nhập tên phim"

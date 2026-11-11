@@ -24,14 +24,15 @@ export default function ButtonSearch() {
   const [keyword, setKeyword] = React.useState('');
   const router = useRouter();
   const debouncedKeyword = useDebounce(keyword, 300);
+  const normalizedKeyword = debouncedKeyword.trim();
 
-  const { data: movies = [], isFetching } = useQuery({
-    queryKey: ['search-movies', debouncedKeyword],
+  const { data: movies = [], isFetching, isError } = useQuery({
+    queryKey: ['search-movies', normalizedKeyword],
     queryFn: async () => {
-      const res = await movieService.searchMovie(debouncedKeyword, '1', '10');
+      const res = await movieService.searchMovie(normalizedKeyword, '1', '10');
       return res?.data?.items || [];
     },
-    enabled: !!debouncedKeyword.trim(),
+    enabled: !!normalizedKeyword,
     staleTime: 1000 * 60 * 10,
   });
 
@@ -42,9 +43,15 @@ export default function ButtonSearch() {
 
   return (
     <div className="flex flex-col gap-4">
-   <button type="button" onClick={() => setOpen(true)}>
-        <Search />
-      </button>
+      <Button
+        type="button"
+        onClick={() => setOpen(true)}
+        size="icon-sm"
+        variant="ghost"
+        aria-label="Tìm kiếm phim"
+      >
+        <Search className="text-card-foreground" />
+      </Button>
       <CommandDialog
         className="mx-auto w-full p-4 md:max-w-3xl!"
         open={open}
@@ -53,6 +60,7 @@ export default function ButtonSearch() {
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="Tìm kiếm phim..."
+            aria-label="Tìm kiếm phim"
             value={keyword}
             onValueChange={setKeyword}
             className="text-base"
@@ -64,7 +72,15 @@ export default function ButtonSearch() {
               </div>
             )}
 
-            <CommandEmpty>No results found.</CommandEmpty>
+            {isError ? (
+              <p role="alert" className="p-4 text-center text-sm text-destructive">
+                Không thể tải gợi ý tìm kiếm. Vui lòng thử lại.
+              </p>
+            ) : (
+              <CommandEmpty>
+                {normalizedKeyword ? 'Không tìm thấy phim phù hợp.' : 'Nhập tên phim để tìm kiếm.'}
+              </CommandEmpty>
+            )}
 
             {!isFetching && movies.length > 0 && (
               <>
@@ -105,7 +121,7 @@ export default function ButtonSearch() {
                   }}
                   className="flex w-full cursor-pointer justify-center py-2 text-center text-red-500"
                 >
-                  Xem tất cả kết quả cho "{debouncedKeyword}"
+                  Xem tất cả kết quả cho &quot;{debouncedKeyword}&quot;
                 </CommandItem>
                 </CommandGroup>
               

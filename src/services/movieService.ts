@@ -44,7 +44,8 @@ export const movieService = {
   },
 
   async searchMovie(q: string, page: string, limit: string) {
-    const apiUrl = `${API_BASE_URL}/v1/api/tim-kiem?keyword=${q}&page=${page}&limit=${limit}`;
+    const queryParams = new URLSearchParams({ keyword: q, page, limit });
+    const apiUrl = `${API_BASE_URL}/v1/api/tim-kiem?${queryParams.toString()}`;
 
     const res = await fetch(apiUrl, {
       next: { revalidate: 3600 },

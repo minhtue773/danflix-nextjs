@@ -18,7 +18,7 @@ export default function Nav() {
   const navItems = [
     { label: 'Trang chủ', href: '/', icon: <House /> },
     { label: 'Phim', href: '/movies', icon: <Clapperboard /> },
-    { label: 'Profile', href: '/profile', icon: <User /> },
+    { label: 'Đăng nhập', href: '/login', icon: <User /> },
   ];
 
   const dropdownItems = [
@@ -30,7 +30,7 @@ export default function Nav() {
   const isDropdownActive = dropdownItems.some((item) => pathname.startsWith(item.href));
 
   return (
-    <nav className="flex items-center justify-between gap-8 px-4">
+    <nav aria-label="Điều hướng chính" className="flex items-center justify-between gap-8 px-4">
       <div className="relative flex flex-col items-center justify-center gap-1">
         <ButtonSearchMobile />
       </div>
@@ -41,12 +41,14 @@ export default function Nav() {
         return (
           <Link
             key={item.label}
+            aria-label={item.label}
+            aria-current={isActive ? 'page' : undefined}
             href={item.href}
             className={`relative flex flex-col items-center justify-center gap-1 transition-all duration-200 ${
               isActive ? 'scale-125 text-red-500' : ''
             }`}
           >
-            {item.icon}
+            <span aria-hidden="true">{item.icon}</span>
           </Link>
         );
       })}
@@ -56,6 +58,7 @@ export default function Nav() {
           render={
             <button
               type="button"
+              aria-label="Mở thêm mục điều hướng"
               className={`relative flex flex-col items-center justify-center gap-1 transition-all duration-200 outline-none ${
                 isDropdownActive ? 'scale-110 text-red-500' : ''
               }`}
@@ -77,7 +80,7 @@ export default function Nav() {
                       isSubActive ? 'font-medium text-red-500' : ''
                     }`}
                   >
-                    {subItem.icon}
+                    <span aria-hidden="true">{subItem.icon}</span>
                     <span>{subItem.label}</span>
                   </Link>
                 </DropdownMenuItem>

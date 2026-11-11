@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 type CTAProps = {
   className?: string;
@@ -20,7 +21,7 @@ const CTA = ({ className }: CTAProps) => {
   };
 
   return (
-    <section className="w-full">
+    <section className={cn('w-full', className)}>
       <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
         <div
           ref={ref}
@@ -31,7 +32,6 @@ const CTA = ({ className }: CTAProps) => {
               src={'/assets/images/2.jpg'}
               alt="Ảnh CTA"
               fill
-              priority
               sizes="100vw"
               className="object-cover"
             />
