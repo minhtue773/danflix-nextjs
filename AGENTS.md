@@ -1,5 +1,6 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+## Project skills
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+Before relevant work, read and follow:
+
+- `.claude/skills/nextjs-best-practices/SKILL.md` for Next.js work.
+- `.claude/skills/ui-ux-pro-max/SKILL.md` for UI/UX design, implementation, or review.
