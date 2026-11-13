@@ -1,94 +1,118 @@
 'use client';
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { CircleEllipsis, Clapperboard, Headset, House, Info, Shield, User } from 'lucide-react';
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
+import { NavBar, type NavBarItem } from '@/components/ui/tubelight-navbar';
+import {
+  CircleEllipsis,
+  Clapperboard,
+  Headset,
+  House,
+  Info,
+  Search,
+  Shield,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import SearchDialog from './SearchDialog';
 
-export default function Nav() {
+const MORE_ITEMS = [
+  { label: 'Giới thiệu', href: '/about', icon: <Info aria-hidden="true" /> },
+  { label: 'Liên hệ', href: '/contact', icon: <Headset aria-hidden="true" /> },
+  { label: 'FAQ', href: '/faq', icon: <Shield aria-hidden="true" /> },
+];
+
+export default function NavMobile() {
   const pathname = usePathname();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const isMoreActive = MORE_ITEMS.some((item) => pathname.startsWith(item.href));
 
-  const navItems = [
-    { label: 'Trang chủ', href: '/', icon: <House /> },
-    { label: 'Phim', href: '/movies', icon: <Clapperboard /> },
-    { label: 'Đăng nhập', href: '/login', icon: <User /> },
+  const items: NavBarItem[] = [
+    {
+      name: 'search',
+      ariaLabel: 'Tìm kiếm phim',
+      icon: Search,
+      onClick: () => setSearchOpen(true),
+    },
+    {
+      name: 'home',
+      ariaLabel: 'Trang chủ',
+      url: '/',
+      icon: House,
+      active: pathname === '/',
+    },
+    {
+      name: 'movies',
+      ariaLabel: 'Phim',
+      url: '/movies',
+      icon: Clapperboard,
+      active: pathname.startsWith('/movies'),
+    },
+    {
+      name: 'login',
+      ariaLabel: 'Đăng nhập',
+      url: '/login',
+      icon: User,
+      active: pathname.startsWith('/login'),
+    },
+    {
+      name: 'more',
+      ariaLabel: moreOpen ? 'Đóng menu thêm' : 'Mở menu thêm',
+      icon: CircleEllipsis,
+      active: moreOpen || isMoreActive,
+      onClick: () => setMoreOpen((isOpen) => !isOpen),
+    },
   ];
-
-  const dropdownItems = [
-    { label: 'Giới thiệu', href: '/about', icon: <Info /> },
-    { label: 'Liên hệ', href: '/contact', icon: <Headset /> },
-    { label: 'FAQ', href: '/faq', icon: <Shield /> },
-  ];
-
-  const isDropdownActive = dropdownItems.some((item) => pathname.startsWith(item.href));
 
   return (
-    <nav aria-label="Điều hướng chính" className="flex items-center justify-between gap-8 px-4">
-      <div className="relative flex flex-col items-center justify-center gap-1">
-        <SearchDialog />
-      </div>
+    <>
+      <NavBar items={items} className="w-full justify-between sm:w-fit sm:gap-2" />
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} hideTrigger />
 
-      {navItems.map((item) => {
-        const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
-
-        return (
-          <Link
-            key={item.label}
-            aria-label={item.label}
-            aria-current={isActive ? 'page' : undefined}
-            href={item.href}
-            className={`relative flex flex-col items-center justify-center gap-1 transition-all duration-200 ${
-              isActive ? 'scale-125 text-red-500' : ''
-            }`}
-          >
-            <span aria-hidden="true">{item.icon}</span>
-          </Link>
-        );
-      })}
-
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <button
-              type="button"
-              aria-label="Mở thêm mục điều hướng"
-              className={`relative flex flex-col items-center justify-center gap-1 transition-all duration-200 outline-none ${
-                isDropdownActive ? 'scale-110 text-red-500' : ''
-              }`}
-            >
-              <CircleEllipsis />
-            </button>
-          }
-        />
-        <DropdownMenuContent>
-          <DropdownMenuGroup>
-            {dropdownItems.map((subItem) => {
-              const isSubActive = pathname.startsWith(subItem.href);
+      <Drawer open={moreOpen} onOpenChange={setMoreOpen} showSwipeHandle>
+        <DrawerContent className="max-h-[min(70dvh,32rem)] border-border bg-background/95 shadow-2xl backdrop-blur-xl">
+          <DrawerHeader className="px-5 pt-5 pb-3 text-left">
+            <DrawerTitle className="font-heading text-lg font-bold">Khám phá thêm</DrawerTitle>
+            <DrawerDescription>Thông tin và hỗ trợ về DANFLIX</DrawerDescription>
+          </DrawerHeader>
+          <nav aria-label="Điều hướng bổ sung" className="grid gap-2 px-4 pb-5">
+            {MORE_ITEMS.map((item) => {
+              const isActive = pathname.startsWith(item.href);
 
               return (
-                <DropdownMenuItem key={subItem.href}>
-                  <Link
-                    href={subItem.href}
-                    className={`flex w-full items-center gap-2 ${
-                      isSubActive ? 'font-medium text-red-500' : ''
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={() => setMoreOpen(false)}
+                  className={`flex min-h-14 items-center gap-3 rounded-xl border px-3 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary motion-reduce:transition-none ${
+                    isActive
+                      ? 'border-primary/30 bg-primary/10 text-primary'
+                      : 'border-border/70 bg-card/60 text-foreground hover:border-primary/30 hover:bg-accent'
+                  }`}
+                >
+                  <span
+                    className={`flex size-10 shrink-0 items-center justify-center rounded-lg [&_svg]:size-5 ${
+                      isActive ? 'bg-primary/15' : 'bg-muted'
                     }`}
                   >
-                    <span aria-hidden="true">{subItem.icon}</span>
-                    <span>{subItem.label}</span>
-                  </Link>
-                </DropdownMenuItem>
+                    {item.icon}
+                  </span>
+                  <span className="flex-1 text-sm font-medium">{item.label}</span>
+                </Link>
               );
             })}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </nav>
+          </nav>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }

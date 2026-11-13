@@ -20,11 +20,26 @@ import { movieService } from '@/services/movieService';
 import { MoviePhimapi } from '@/types/movie';
 import { getMovieImageUrl } from '@/lib/utils';
 
-export default function SearchDialog() {
-  const [open, setOpen] = React.useState(false);
+interface SearchDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+}
+
+export default function SearchDialog({
+  open: controlledOpen,
+  onOpenChange,
+  hideTrigger = false,
+}: SearchDialogProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  const open = controlledOpen ?? internalOpen;
   const [keyword, setKeyword] = React.useState('');
   const router = useRouter();
   const normalizedKeyword = useDebounce(keyword.trim(), 300);
+  const setOpen = (nextOpen: boolean) => {
+    if (controlledOpen === undefined) setInternalOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  };
 
   const {
     data: movies = [],
@@ -53,16 +68,18 @@ export default function SearchDialog() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Button
-        type="button"
-        className="touch-manipulation"
-        onClick={() => setOpen(true)}
-        aria-label="Tìm kiếm phim"
-        size="icon-sm"
-        variant="ghost"
-      >
-        <Search className="text-card-foreground" />
-      </Button>
+      {!hideTrigger && (
+        <Button
+          type="button"
+          className="touch-manipulation"
+          onClick={() => setOpen(true)}
+          aria-label="Tìm kiếm phim"
+          size="icon-sm"
+          variant="ghost"
+        >
+          <Search className="text-card-foreground" />
+        </Button>
+      )}
 
       <CommandDialog
         className="mx-auto w-full p-4 md:max-w-3xl!"

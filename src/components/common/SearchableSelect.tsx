@@ -46,18 +46,21 @@ export function SearchableSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full max-w-3xs justify-between rounded-md border-border bg-background text-base font-normal"
+            className="h-11 w-full justify-between rounded-xl border-border/80 bg-card/70 text-sm font-medium shadow-sm transition-colors hover:border-primary/40 hover:bg-accent focus-visible:ring-primary/40"
           >
             <span className="truncate">{selectedOption ? selectedOption.name : placeholder}</span>
-            <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+            <ChevronsUpDown className="ml-2 size-4 shrink-0 text-muted-foreground" />
           </Button>
         }
-      ></PopoverTrigger>
-      <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
+      />
+      <PopoverContent
+        className="w-(--radix-popover-trigger-width) rounded-xl border-border/80 p-1 shadow-xl"
+        align="start"
+      >
         <Command>
-          <CommandInput placeholder={searchPlaceholder} className="h-9 text-xs" />
-          <CommandList className="max-h-52 overflow-y-auto">
-            <CommandEmpty className="py-2 text-center text-xs text-muted-foreground">
+          <CommandInput placeholder={searchPlaceholder} className="h-10 text-sm" />
+          <CommandList className="max-h-60 overflow-y-auto">
+            <CommandEmpty className="py-3 text-center text-xs text-muted-foreground">
               Không tìm thấy năm phù hợp.
             </CommandEmpty>
             <CommandGroup>
@@ -69,7 +72,7 @@ export function SearchableSelect({
                     onChange(option.value === value ? '' : option.value);
                     setOpen(false);
                   }}
-                  className="cursor-pointer text-xs"
+                  className="min-h-10 cursor-pointer rounded-lg text-sm"
                 >
                   <Check
                     className={cn(
