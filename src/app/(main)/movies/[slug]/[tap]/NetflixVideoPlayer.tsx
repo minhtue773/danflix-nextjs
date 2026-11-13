@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { MediaPlayer, MediaProvider, type MediaPlayerInstance } from '@vidstack/react';
 import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
 import { Film, Play, RotateCcw } from 'lucide-react';
@@ -13,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 
 interface NetflixVideoPlayerProps {
   src?: string;
@@ -44,12 +43,6 @@ export default function NetflixVideoPlayer({
 
   const lastSavedTime = useRef<number>(0);
   const STORAGE_KEY = `watch_progress_${movieId}`;
-
-  useEffect(() => {
-    setError(false);
-    setShowModal(false);
-    setResumeTime(null);
-  }, [src]);
 
   // Khai báo khi video sẵn sàng phát
   const handleCanPlay = () => {

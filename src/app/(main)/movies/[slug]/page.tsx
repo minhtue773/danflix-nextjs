@@ -9,7 +9,6 @@ import MovieTabs from './MovieTabs';
 import { movieService } from '@/services/movieService';
 import { Suspense } from 'react';
 import SkeletonMovieTabs from './SkeletonMovieTabs';
-import MovieComment from './MovieComment';
 import stripHtml from '@/lib/stripHtml';
 interface PageProps {
   params: Promise<{ slug: string }>; // Dành cho Next.js 15
@@ -147,8 +146,6 @@ export default async function DetailPage({ params }: PageProps) {
                 <Suspense fallback={<SkeletonMovieTabs />}>
                   <MovieTabs type={movie?.tmdb?.type} id={movie?.tmdb?.id} />
                 </Suspense>
-
-                {/* <MovieComment /> */}
               </div>
             </div>
           </div>

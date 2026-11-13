@@ -10,7 +10,7 @@ import {
 import { CircleEllipsis, Clapperboard, Headset, House, Info, Shield, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import ButtonSearchMobile from './ButtonSearchMobile';
+import SearchDialog from './SearchDialog';
 
 export default function Nav() {
   const pathname = usePathname();
@@ -32,7 +32,7 @@ export default function Nav() {
   return (
     <nav aria-label="Điều hướng chính" className="flex items-center justify-between gap-8 px-4">
       <div className="relative flex flex-col items-center justify-center gap-1">
-        <ButtonSearchMobile />
+        <SearchDialog />
       </div>
 
       {navItems.map((item) => {

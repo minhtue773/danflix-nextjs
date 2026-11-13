@@ -1,10 +1,15 @@
-export default async function tmdb(url: string, params: Record<string, any> = {}) {
+export default async function tmdb(
+  url: string,
+  params: Record<string, string | number | boolean> = {}
+) {
   if (!url || url.includes('undefined') || url.includes('null')) {
     console.log(`[TMDB Warning] Invalid URL requested: ${url}`);
     return null;
   }
   // Chuyển Object thành query string (ví dụ: ?append_to_response=...&language=vi-VN)
-  const queryString = new URLSearchParams(params).toString();
+  const queryString = new URLSearchParams(
+    Object.entries(params).map(([key, value]) => [key, String(value)])
+  ).toString();
   const fullUrl = `https://api.themoviedb.org/3/${url}${queryString ? `?${queryString}` : ''}`;
 
   try {

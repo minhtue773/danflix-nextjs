@@ -35,7 +35,8 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <SearchInput />
             </div>
             <div className="text-sm text-zinc-400">
-              Kết quả tìm kiếm cho: <span className="font-semibold text-white">"{q}"</span>
+              Kết quả tìm kiếm cho:{' '}
+              <span className="font-semibold text-white">&quot;{q}&quot;</span>
             </div>
             <Suspense key={`${q}-${page}`} fallback={<MovieListSkeleton />}>
               <MovieSearchList q={q} page={page} limit={limit} />

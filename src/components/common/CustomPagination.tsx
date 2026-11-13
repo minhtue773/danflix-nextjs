@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Pagination,
   PaginationContent,
@@ -23,7 +23,6 @@ interface AppPaginationProps {
 }
 
 export function AppPagination({ pagination }: AppPaginationProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

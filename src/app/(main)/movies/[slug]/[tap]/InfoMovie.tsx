@@ -92,7 +92,7 @@ export default function InfoMovie({ movie, episodes, movieSlug, currentTapSlug }
       {/* Video Player Section */}
       <div ref={playerRef} className="scroll-mt-6">
         <NetflixVideoPlayer
-          key={`${currentServerIndex}-${currentSrc?.slug || activeEpisodeIndex}`}
+          key={`${movieSlug}-${currentTapSlug}-${currentServerIndex}-${currentSrc?.slug || activeEpisodeIndex}-${currentSrc?.link_m3u8 ?? ''}`}
           movieId={`${movieSlug}_tap_${currentTapSlug || '1'}`}
           src={currentSrc?.link_m3u8}
           poster={movie?.thumb_url || movie?.poster_url}

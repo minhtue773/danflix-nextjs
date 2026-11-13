@@ -18,21 +18,25 @@ import { Loader2, Search } from 'lucide-react';
 import Image from 'next/image';
 import { movieService } from '@/services/movieService';
 import { MoviePhimapi } from '@/types/movie';
+import { getMovieImageUrl } from '@/lib/utils';
 
-export default function ButtonSearch() {
+export default function SearchDialog() {
   const [open, setOpen] = React.useState(false);
   const [keyword, setKeyword] = React.useState('');
   const router = useRouter();
-  const debouncedKeyword = useDebounce(keyword, 300);
-  const normalizedKeyword = debouncedKeyword.trim();
+  const normalizedKeyword = useDebounce(keyword.trim(), 300);
 
-  const { data: movies = [], isFetching, isError } = useQuery({
+  const {
+    data: movies = [],
+    isFetching,
+    isError,
+  } = useQuery({
     queryKey: ['search-movies', normalizedKeyword],
-    queryFn: async () => {
+    queryFn: async (): Promise<MoviePhimapi[]> => {
       const res = await movieService.searchMovie(normalizedKeyword, '1', '10');
-      return res?.data?.items || [];
+      return Array.isArray(res?.data?.items) ? res.data.items : [];
     },
-    enabled: !!normalizedKeyword,
+    enabled: open && Boolean(normalizedKeyword),
     staleTime: 1000 * 60 * 10,
   });
 
@@ -41,15 +45,21 @@ export default function ButtonSearch() {
     router.push(`/movies/${slug}`);
   };
 
+  const handleViewAll = () => {
+    setOpen(false);
+    setKeyword('');
+    router.push(`/search?q=${encodeURIComponent(normalizedKeyword)}`);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <Button
         type="button"
-        className={'touch-manipulation'}
+        className="touch-manipulation"
         onClick={() => setOpen(true)}
         aria-label="Tìm kiếm phim"
         size="icon-sm"
-        variant={'ghost'}
+        variant="ghost"
       >
         <Search className="text-card-foreground" />
       </Button>
@@ -85,49 +95,37 @@ export default function ButtonSearch() {
             )}
 
             {!isFetching && movies.length > 0 && (
-              <>
-                <CommandGroup heading="Phim gợi ý">
-                  {movies.map((movie: MoviePhimapi) => (
-                    <CommandItem
-                      key={movie._id}
-                      value={movie.name}
-                      onSelect={() => {
-                        handleSelect(movie.slug);
-                      }}
-                      className="flex cursor-pointer items-center gap-3 p-2"
-                    >
-                      <Image
-                        src={movie.poster_url}
-                        alt={movie.name}
-                        width={48}
-                        height={72}
-                        className="aspect-2/3 h-auto w-12 rounded object-cover"
-                      />
-                      <div className="flex flex-col gap-1 overflow-hidden">
-                        <span className="truncate text-sm font-semibold">{movie.name}</span>
-                        <span className="truncate text-xs">{movie.origin_name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {movie.year} • {movie.quality}
-                        </span>
-                      </div>
-                    </CommandItem>
-                  ))}
-  <CommandItem
-                  onSelect={() => {
-                    const target = debouncedKeyword.trim();
-                    setOpen(false);
-                    setKeyword(''); // Clear input trong Modal
-                    if (target) {
-                      router.push(`/search?q=${encodeURIComponent(target)}`);
-                    }
-                  }}
+              <CommandGroup heading="Phim gợi ý">
+                {movies.map((movie) => (
+                  <CommandItem
+                    key={movie._id}
+                    value={movie.name}
+                    onSelect={() => handleSelect(movie.slug)}
+                    className="flex cursor-pointer items-center gap-3 p-2"
+                  >
+                    <Image
+                      src={getMovieImageUrl(movie.poster_url)}
+                      alt={movie.name}
+                      width={48}
+                      height={72}
+                      className="aspect-2/3 h-auto w-12 rounded object-cover"
+                    />
+                    <div className="flex flex-col gap-1 overflow-hidden">
+                      <span className="truncate text-sm font-semibold">{movie.name}</span>
+                      <span className="truncate text-xs">{movie.origin_name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {movie.year} • {movie.quality}
+                      </span>
+                    </div>
+                  </CommandItem>
+                ))}
+                <CommandItem
+                  onSelect={handleViewAll}
                   className="flex w-full cursor-pointer justify-center py-2 text-center text-red-500"
                 >
-                  Xem tất cả kết quả cho &quot;{debouncedKeyword}&quot;
+                  Xem tất cả kết quả cho &quot;{normalizedKeyword}&quot;
                 </CommandItem>
-                </CommandGroup>
-              
-              </>
+              </CommandGroup>
             )}
           </CommandList>
         </Command>

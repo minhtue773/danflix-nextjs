@@ -1,52 +1,52 @@
-'use client';
-
-import { Button } from '@/components/ui/button';
-import { ArrowUpRight } from 'lucide-react';
-import { motion } from 'motion/react';
+import GlassyCarousel, { type GlassyCarouselItem } from '@/components/ui/glassy-coverflow-carousel';
+import { movieService } from '@/services/movieService';
+import type { MoviePhimapi } from '@/types/movie';
+import { getMovieImageUrl } from '@/lib/utils';
 import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 
-export default function HeroBanner() {
+export default async function HeroBanner() {
+  let items: GlassyCarouselItem[] = [];
+
+  try {
+    const response = await movieService.getMovies({ type: 'phim-chieu-rap', limit: 8 });
+    const movies: MoviePhimapi[] = Array.isArray(response?.data?.items) ? response.data.items : [];
+
+    items = movies.map((movie) => ({
+      id: movie._id || movie.slug,
+      title: movie.name,
+      subtitle: [movie.year, movie.quality, movie.lang].filter(Boolean).join(' · '),
+      image: getMovieImageUrl(movie.poster_url, '/assets/images/NoImage.jpg'),
+      href: `/movies/${movie.slug}`,
+    }));
+  } catch (error) {
+    console.error('Không thể tải phim cho carousel trang chủ:', error);
+  }
+
+  if (items.length > 0) {
+    return <GlassyCarousel items={items} />;
+  }
+
   return (
-    <section className="w-full">
-      <div className="relative flex h-[60vh] w-full items-center justify-center before:absolute before:top-24 before:-z-10 before:h-full before:w-full before:rounded-full before:bg-linear-to-r before:from-sky-100 before:via-white before:to-amber-100 before:blur-3xl dark:before:-z-10 dark:before:rounded-full dark:before:from-slate-800 dark:before:via-black dark:before:to-stone-700 dark:before:blur-3xl">
-        <div className="mx-auto flex max-w-5xl flex-col gap-8">
-          <div className="relative flex flex-col items-center gap-4 px-4 text-center sm:gap-6">
-            <motion.h1
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: 'easeInOut' }}
-              className="text-4xl leading-10 font-medium md:text-7xl md:leading-18"
-            >
-              Thế giới điện ảnh đỉnh cao{' '}
-              <span className={`tracking-tight`}>trên từng góc nhìn</span>{' '}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.1, ease: 'easeInOut' }}
-              className="max-w-2xl text-sm font-normal text-muted-foreground md:text-base"
-            >
-              Khám phá hàng ngàn bộ phim bom tấn, phim bộ đặc sắc và phim hoạt hình vietsub chất
-              lượng cao. Trải nghiệm không gian giải trí mượt mà, cập nhật liên tục mỗi ngày.{' '}
-            </motion.p>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: 'easeInOut' }}
-            className="flex flex-col items-center justify-center gap-8 md:flex-row"
-          >
-            <Button className="group relative h-12 w-fit cursor-pointer overflow-hidden rounded-full p-1 ps-6 pe-14 text-sm font-medium transition-all duration-500 hover:ps-14 hover:pe-6">
-              <Link href={'/movies'} className="relative z-10 transition-all duration-500">
-                Trải nghiệm
-              </Link>
-              <span className="absolute right-1 flex h-10 w-10 items-center justify-center rounded-full bg-background text-foreground transition-all duration-500 group-hover:right-[calc(100%-44px)] group-hover:rotate-45">
-                <ArrowUpRight size={16} />
-              </span>
-            </Button>
-          </motion.div>
-        </div>
+    <section className="flex min-h-[420px] w-full flex-col items-center justify-center gap-8 px-4 text-center">
+      <div className="flex max-w-5xl flex-col items-center gap-4 sm:gap-6">
+        <h1 className="text-4xl leading-tight font-medium md:text-7xl">
+          Thế giới điện ảnh đỉnh cao <span className="tracking-tight">trên từng góc nhìn</span>
+        </h1>
+        <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+          Khám phá hàng ngàn bộ phim bom tấn, phim bộ đặc sắc và phim hoạt hình vietsub chất lượng
+          cao. Trải nghiệm không gian giải trí mượt mà, cập nhật liên tục mỗi ngày.
+        </p>
       </div>
+      <Link
+        href="/movies"
+        className="group relative inline-flex h-12 items-center overflow-hidden rounded-full bg-primary py-1 pr-14 pl-6 text-sm font-medium text-primary-foreground transition-all duration-500 hover:pr-6 hover:pl-14"
+      >
+        <span className="relative z-10">Trải nghiệm</span>
+        <span className="absolute right-1 flex size-10 items-center justify-center rounded-full bg-background text-foreground transition-all duration-500 group-hover:right-[calc(100%-44px)] group-hover:rotate-45">
+          <ArrowUpRight size={16} />
+        </span>
+      </Link>
     </section>
   );
 }

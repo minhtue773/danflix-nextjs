@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Nav from './Nav';
-import ButtonSearch from './ButtonSearch';
+import SearchDialog from './SearchDialog';
 import { buttonVariants } from '@/components/ui/button';
 
 export default function HeaderDesktop() {
@@ -15,7 +15,7 @@ export default function HeaderDesktop() {
         </Link>
         <Nav />
         <div className="flex items-center gap-2">
-          <ButtonSearch />
+          <SearchDialog />
           <Link href="/login" className={buttonVariants()}>
             Đăng nhập
           </Link>

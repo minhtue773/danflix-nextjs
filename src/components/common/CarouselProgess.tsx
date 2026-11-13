@@ -19,27 +19,23 @@ interface CarouselWithProgressProps {
 
 export default function CarouselProgress({ movies }: CarouselWithProgressProps) {
   const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
-  const [count, setCount] = React.useState(0);
+  const subscribe = React.useCallback(
+    (onStoreChange: () => void) => {
+      if (!api) return () => {};
+      api.on('select', onStoreChange);
+      api.on('reInit', onStoreChange);
+      return () => {
+        api.off('select', onStoreChange);
+        api.off('reInit', onStoreChange);
+      };
+    },
+    [api]
+  );
+  const getSnapshot = React.useCallback(() => api?.selectedScrollSnap() ?? 0, [api]);
+  const current = React.useSyncExternalStore(subscribe, getSnapshot, () => 0) + 1;
+  const count = api?.scrollSnapList().length ?? 0;
 
   const progress = count > 0 ? (current * 100) / count : 0;
-
-  React.useEffect(() => {
-    if (!api) return;
-
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    const onSelect = () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    };
-
-    api.on('select', onSelect);
-
-    return () => {
-      api.off('select', onSelect);
-    };
-  }, [api]);
 
   if (!movies || movies.length === 0) return null;
 
